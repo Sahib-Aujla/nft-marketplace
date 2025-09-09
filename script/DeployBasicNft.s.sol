@@ -17,6 +17,6 @@ contract DeployBasicNft is Script{
 
     function run()external returns(BasicNft){
 
-        deployNft();
+        return deployNft();
     }
 }
