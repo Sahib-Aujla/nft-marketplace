@@ -14,4 +14,9 @@ contract TestBasicNft is Test{
         basicNft = deployBasicNft.run();
     }
 
+    function testNameAndSymbol() external{
+        assert(keccak256(abi.encodePacked(basicNft.name()))==keccak256(abi.encodePacked("Kutta")));
+        assert(keccak256(abi.encodePacked(basicNft.symbol()))==keccak256(abi.encodePacked("DOG")));
+    }
+
 }
