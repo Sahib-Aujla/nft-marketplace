@@ -1,8 +1,9 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import {Script} from "forge-std/Script.sol";
+import {Script, console} from "forge-std/Script.sol";
 import {DevOpsTools} from "foundry-devops/src/DevOpsTools.sol";
+import {BasicNft} from "../src/BasicNft.sol";
 
 contract MintBasicNft is Script {
     string constant PUG =
@@ -18,7 +19,12 @@ contract MintBasicNft is Script {
 
     function mintNftOnContract(address basicNftAddress) public {
         vm.startBroadcast();
-        BasicNft(basicNftAddress).mintNft(PUG);
+        uint256 tokenId = BasicNft(basicNftAddress).mintNft(PUG);
+        console.log("Minted tokenId:", tokenId);
+        BasicNft(basicNftAddress).transfer(
+            0xD6bdfc73ddDf721Fc757f8559fd3C91Ed43b82e4,
+            tokenId
+        );
         vm.stopBroadcast();
     }
 }
