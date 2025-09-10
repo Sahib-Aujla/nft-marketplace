@@ -18,10 +18,13 @@ contract MintBasicNft is Script {
     }
 
     function mintNftOnContract(address basicNftAddress) public {
+        
         vm.startBroadcast();
+        address owner = vm.envAddress("DEPLOYER");
         uint256 tokenId = BasicNft(basicNftAddress).mintNft(PUG);
         console.log("Minted tokenId:", tokenId);
-        BasicNft(basicNftAddress).transfer(
+        BasicNft(basicNftAddress).safeTransferFrom(
+            owner,
             0xD6bdfc73ddDf721Fc757f8559fd3C91Ed43b82e4,
             tokenId
         );
