@@ -2,11 +2,17 @@
 pragma solidity ^0.8.19;
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
 
 contract MoonNft is ERC721, Ownable {
 
     event CreatedNFT(uint256 indexed tokenId, address indexed minter);
 
+    enum NFTState{
+        HAPPY,
+        SAD
+    }
+    mapping(uint256 => NFTState) public s_tokenIdToState;
 
     uint256 private s_tokenCounter;
     string happyUri;
@@ -37,5 +43,31 @@ contract MoonNft is ERC721, Ownable {
 
     function getTokenCounter() public view returns (uint256) {
         return s_tokenCounter;
+    }
+
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        
+        string memory imageURI = happyUri;
+
+        if (s_tokenIdToState[tokenId] == NFTState.SAD) {
+            imageURI = sadUri;
+        }
+        return string(
+            abi.encodePacked(
+                _baseURI(),
+                Base64.encode(
+                    bytes( // bytes casting actually unnecessary as 'abi.encodePacked()' returns a bytes
+                        abi.encodePacked(
+                            '{"name":"',
+                            name(), // You can add whatever name here
+                            '", "description":"An NFT that reflects the mood of the owner, 100% on Chain!", ',
+                            '"attributes": [{"trait_type": "moodiness", "value": 100}], "image":"',
+                            imageURI,
+                            '"}'
+                        )
+                    )
+                )
+            )
+        );
     }
 }
