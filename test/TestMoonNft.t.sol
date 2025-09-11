@@ -61,4 +61,11 @@ contract TestMoonNft is Test {
                 keccak256(bytes(SAD_MOOD_URI))
         );
     }
+
+    function testGetTokenCounter()external{
+        assert(moonNft.getTokenCounter() == 0);
+        vm.prank(USER);
+        moonNft.mintNft();
+        assert(moonNft.getTokenCounter() == 1);
+    }
 }
