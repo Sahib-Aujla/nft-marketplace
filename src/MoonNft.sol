@@ -26,10 +26,11 @@ contract MoonNft is ERC721, Ownable {
         sadUri = _sadUri;
     }
 
-    function mintNft() public {
+    function mintNft() public returns (uint256) {
         s_tokenCounter++;
         _safeMint(msg.sender, s_tokenCounter);
         emit CreatedNFT(s_tokenCounter, msg.sender);
+        return s_tokenCounter;
     }
 
     function getHappySVG() public view returns (string memory) {
