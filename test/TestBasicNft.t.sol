@@ -15,7 +15,7 @@ contract TestBasicNft is Test {
         basicNft = deployBasicNft.run();
     }
 
-    function testNameAndSymbol() external {
+    function testNameAndSymbol() external view {
         assert(
             keccak256(abi.encodePacked(basicNft.name())) ==
                 keccak256(abi.encodePacked("Kutta"))

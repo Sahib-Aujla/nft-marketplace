@@ -13,4 +13,9 @@ contract TestMoonNft is Test{
         deployer = new DeployMoodNft();
         moonNft = deployer.run();
     }
+
+    function testCheckNameAndSymbol() external view{
+        assert(keccak256(bytes(moonNft.name()))==keccak256(bytes("Moon")));
+        assert(keccak256(bytes(moonNft.symbol()))==keccak256(bytes("MOON")) );
+    }
 }
