@@ -16,8 +16,8 @@ contract DeployMoodNft is Script {
 
         vm.startBroadcast();
         MoonNft moodNft = new MoonNft(
-            svgToImageURI(sadSvg),
-            svgToImageURI(happySvg)
+            svgToImageURI(happySvg),
+            svgToImageURI(sadSvg)
         );
         vm.stopBroadcast();
         return moodNft;
