@@ -31,4 +31,16 @@ contract TestMoonNft is Test {
         console.log("TokenId:", tokenId);
         assert(moonNft.balanceOf(USER) == 1);
     }
+
+    function testFlipMood() external {
+        vm.startPrank(USER);
+        uint256 tokenId = moonNft.mintNft();
+        assert(moonNft.s_tokenIdToState(tokenId) == MoonNft.NFTState.HAPPY);
+        
+        moonNft.flipMood(tokenId);
+        assert(moonNft.s_tokenIdToState(tokenId) == MoonNft.NFTState.SAD);
+        moonNft.flipMood(tokenId);
+        assert(moonNft.s_tokenIdToState(tokenId) == MoonNft.NFTState.HAPPY);
+        vm.stopPrank();
+    }
 }
