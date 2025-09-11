@@ -5,10 +5,9 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
 
 contract MoonNft is ERC721, Ownable {
-
     event CreatedNFT(uint256 indexed tokenId, address indexed minter);
 
-    enum NFTState{
+    enum NFTState {
         HAPPY,
         SAD
     }
@@ -27,12 +26,12 @@ contract MoonNft is ERC721, Ownable {
         sadUri = _sadUri;
     }
 
-    function mintNft()public {
+    function mintNft() public {
         s_tokenCounter++;
         _safeMint(msg.sender, s_tokenCounter);
         emit CreatedNFT(s_tokenCounter, msg.sender);
-
     }
+
     function getHappySVG() public view returns (string memory) {
         return happyUri;
     }
@@ -45,29 +44,49 @@ contract MoonNft is ERC721, Ownable {
         return s_tokenCounter;
     }
 
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        
+    function _baseURI() internal pure override returns (string memory) {
+        return "data:application/json;base64,";
+    }
+
+    function flipMood(uint256 tokenId) public {
+        if (
+            getApproved(tokenId) != msg.sender && ownerOf(tokenId) != msg.sender
+        ) {
+            revert();
+        }
+
+        if (s_tokenIdToState[tokenId] == NFTState.HAPPY) {
+            s_tokenIdToState[tokenId] = NFTState.SAD;
+        } else {
+            s_tokenIdToState[tokenId] = NFTState.HAPPY;
+        }
+    }
+
+    function tokenURI(
+        uint256 tokenId
+    ) public view virtual override returns (string memory) {
         string memory imageURI = happyUri;
 
         if (s_tokenIdToState[tokenId] == NFTState.SAD) {
             imageURI = sadUri;
         }
-        return string(
-            abi.encodePacked(
-                _baseURI(),
-                Base64.encode(
-                    bytes( // bytes casting actually unnecessary as 'abi.encodePacked()' returns a bytes
-                        abi.encodePacked(
-                            '{"name":"',
-                            name(), // You can add whatever name here
-                            '", "description":"An NFT that reflects the mood of the owner, 100% on Chain!", ',
-                            '"attributes": [{"trait_type": "moodiness", "value": 100}], "image":"',
-                            imageURI,
-                            '"}'
+        return
+            string(
+                abi.encodePacked(
+                    _baseURI(),
+                    Base64.encode(
+                        bytes( // bytes casting actually unnecessary as 'abi.encodePacked()' returns a bytes
+                            abi.encodePacked(
+                                '{"name":"',
+                                name(), // You can add whatever name here
+                                '", "description":"An NFT that reflects the mood of the owner, 100% on Chain!", ',
+                                '"attributes": [{"trait_type": "moodiness", "value": 100}], "image":"',
+                                imageURI,
+                                '"}'
+                            )
                         )
                     )
                 )
-            )
-        );
+            );
     }
 }
